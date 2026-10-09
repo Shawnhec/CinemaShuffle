@@ -1,0 +1,65 @@
+# 顯示在 GitHub 的 Actions 分頁上的名稱
+name: Deploy to GitHub Pages
+
+# 什麼時候執行這個 workflow
+on:
+  # 有新的 commit push 到 main 時自動執行
+  push:
+    branches: ['main']
+  # 在 Actions 分頁多一個「Run workflow」按鈕，可以手動執行
+  workflow_dispatch:
+
+# 這個 workflow 能做哪些事（預設權限之外，明確列出需要的）
+permissions:
+  contents: read   # 讀取 repo 的程式碼（checkout 需要）
+  pages: write     # 部署到 GitHub Pages
+  id-token: write  # 讓 deploy-pages 向 GitHub 證明「這次部署確實來自這個 workflow」
+
+# 同一時間只跑一個部署
+concurrency:
+  group: 'pages'
+  # 連續 push 好幾次時，取消還在跑的舊部署，只保留最新的
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    # 部署到名為 github-pages 的環境，在 repo 的 Environments 頁面可以看到部署紀錄
+    environment:
+      name: github-pages
+      # 部署完成後的網址，取自下面 id 為 deployment 那一步的輸出，會顯示在執行結果上
+      url: ${{ steps.deployment.outputs.page_url }}
+    # 在 GitHub 提供的 Ubuntu 虛擬機上執行
+    runs-on: ubuntu-latest
+    steps:
+      # 1. 把 repo 的程式碼下載到虛擬機
+      - uses: actions/checkout@v7
+
+      # 2. 安裝 Node.js
+      - uses: actions/setup-node@v7
+        with:
+          node-version: lts/*   # 使用最新的 LTS（長期支援）版本
+          cache: 'npm'          # 快取下載過的套件，下次安裝比較快
+
+      # 3. 依照 package-lock.json 安裝套件
+      #    跟 npm install 不同，npm ci 會完全照 lock 檔安裝，每次結果都一樣
+      - run: npm ci
+
+      # 4. 打包網站，輸出到 dist/ 資料夾
+      - run: npm run build
+        env:
+          # .env 沒有放進 git，所以 API key 改從 repo 的 secret 傳進來
+          # 注意：Vite 會把 VITE_ 開頭的變數直接寫進打包後的 JS，網站上線後還是看得到
+          VITE_APP_ACCESS_KEY: ${{ secrets.VITE_APP_ACCESS_KEY }}
+
+      # 5. 準備 GitHub Pages 需要的設定
+      - uses: actions/configure-pages@v6
+
+      # 6. 把 dist/ 打包上傳，交給下一步部署
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: './dist'
+
+      # 7. 正式部署到 GitHub Pages
+      #    id 讓上面的 environment.url 可以讀到這一步輸出的網址
+      - id: deployment
+        uses: actions/deploy-pages@v5
