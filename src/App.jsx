@@ -1,122 +1,125 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import "./App.css";
+import Form from "./components/Form";
+import { MOVIE_GENRES, TV_GENRES, LANGUAGES } from "./constants";
+import History from "./components/History";
+import ExcludedList from "./components/ExcludedList";
+const ACCESS_KEY = import.meta.env.VITE_APP_ACCESS_KEY;
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [media, setMedia] = useState(null);
+  const [mediaType, setMediaType] = useState("movie");
+  const [excludedGenres, setExcludedGenres] = useState(new Set());
+  const [excludedLanguages, setExcludedLanguages] = useState(new Set());
+  const [history, setHistory] = useState([]);
+
+  async function fetchBasedOnMediaType(type) {
+    const randomPage = Math.floor(Math.random() * 500) + 1;
+    let baseURL = "";
+    if(excludedGenres.size == 0 && excludedLanguages.size == 0) {
+      baseURL = `https://api.themoviedb.org/3/discover/${type}` +
+      `?api_key=${ACCESS_KEY}` +
+      `&page=${randomPage}`;
+    } 
+    else {
+      const allowedLanguages = Object.keys(LANGUAGES).filter(
+        (lang) => !excludedLanguages.has(lang)
+      );
+      
+      const randomLanguage = allowedLanguages[
+        Math.floor(Math.random() * allowedLanguages.length)
+      ];
+
+      baseURL = `https://api.themoviedb.org/3/discover/${type}` +
+      `?api_key=${ACCESS_KEY}` +
+      `&without_genres=${[...excludedGenres].join(",")}` +
+      `&with_original_language=${randomLanguage}`
+    }
+    
+    const response = await fetch(baseURL);
+    const data = await response.json();
+    const randomIdx = Math.floor(Math.random() * data.results.length);
+    const item = data.results[randomIdx];
+    setMedia(item);
+    setHistory((prev) => [item, ... prev]);
+
+    console.log("hi");
+  }
+
+  useEffect(() => {
+    fetchBasedOnMediaType(mediaType);
+  }, [mediaType]);
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="app">
+      <h1>CinemaShuffle</h1>
+      <h2>Discover Your Next Favorite Movie</h2>
 
-      <div className="ticks"></div>
+      <div className="main-container">
+        <aside className="sidebar left">
+          <History history={history}></History>
+        </aside>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+        <div className="center">
+          {media ? (
+            <div className="info-container">
+              <h3>{media.title ?? media.name}</h3>
+              <p>Language: {LANGUAGES[media.original_language]}</p>
+              {mediaType == "movie" ? (
+                <p>Release Date: {media.release_date}</p>
+              ) : (
+                <p>First Date on Air: {media.first_air_date}</p>
+              )}
+              <p>Rating: {media.vote_average}</p>
+              <p>
+                Overview:
+                <br></br>
+                <br></br>
+                {media.overview}
+              </p>
+              {media.poster_path ? (
+                <img
+                  src={`https://image.tmdb.org/t/p/w500${media.poster_path}`}
+                  alt={media.title ?? media.name}
+                />
+              ) : (
+                <p>No poster found</p>
+              )}
+            </div>
+          ) : (
+            <p>Sorry, something went wrong.</p>
+          )}
+          <Form
+            genres={mediaType === "movie" ? MOVIE_GENRES : TV_GENRES}
+            mediaType={mediaType}
+            languages={LANGUAGES}
+            setMediaType={setMediaType}
+            excludedGenres={excludedGenres}
+            excludedLanguages={excludedLanguages}
+            setExcludedGenres={setExcludedGenres}
+            setExcludedLanguages={setExcludedLanguages}
+          ></Form>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+        
+        <aside className="sidebar right">
+          <ExcludedList
+            genres={mediaType === "movie" ? MOVIE_GENRES : TV_GENRES}
+            mediaType={mediaType}
+            languages={LANGUAGES}
+            setMediaType={setMediaType}
+            excludedGenres={excludedGenres}
+            excludedLanguages={excludedLanguages}
+            setExcludedGenres={setExcludedGenres}
+            setExcludedLanguages={setExcludedLanguages}
+          ></ExcludedList>
+        </aside>
+      </div>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      <button id="next-button" onClick={() => fetchBasedOnMediaType(mediaType)}>
+        Next
+      </button>
+    </div>
+  );
 }
 
-export default App
+export default App;
