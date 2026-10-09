@@ -1,10 +1,10 @@
 # Web Development Project 4 - *CinemaShuffle*
 
-Submitted by: **Eve**
+Submitted by: **Shawn**
 
 This web app: **CinemaShuffle is a StumbleUpon-style discovery app for movies and TV shows. Each click on "Next" pulls a random title from The Movie Database (TMDB) and shows its poster, title, release date, rating, language, genres, and overview. Clicking the displayed language or a genre adds it to a ban list so future results skip it, and every title seen during the session is kept in a history panel.**
 
-Time spent: **X** hours spent in total
+Time spent: **20** hours spent in total
 
 ## Required Features
 
@@ -26,7 +26,7 @@ The following **required** functionality is completed:
 - [x] **Attributes on the ban list prevent further images/API results with that attribute from being displayed**
   - Clicking on the API call button should not result in any image/attributes with attribute values in the ban list being displayed (ex. Using a cat API, if the ban list includes the value 'Siberian' for the breed attribute, clicking on the Discover button should never result in a Siberian cat being displayed)
   - Note: More attribute values on the ban list may result in a higher frequency of repeat results
-  - [ ] _To ensure an accurate grade, your recording **must** show that when clicked, an attribute in the ban list is immediately removed from the list of banned attributes_
+  - [x] _To ensure an accurate grade, your recording **must** show that when clicked, an attribute in the ban list is immediately removed from the list of banned attributes_
 
 The following **optional** features are implemented:
 
@@ -43,12 +43,13 @@ The following **additional** features are implemented:
 * [x] Results without a poster are skipped, so every result shows an image
 * [x] If a whole page of results is filtered out by the ban list, the app automatically retries with another random page
 * [x] Responsive three-column layout (history / current result / ban list) that collapses to a single column on small screens
+* [x] Deopoy on GitHub Pages
 
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+[![Video Walkthrough](https://img.youtube.com/vi/U4kQ4dKPIig/hqdefault.jpg)](https://youtu.be/U4kQ4dKPIig)
 
 <!-- Replace this with whatever GIF tool you used! -->
 GIF created with ...
@@ -71,7 +72,7 @@ Challenges encountered while building the app:
 
 ## License
 
-    Copyright 2026 Eve
+    Copyright 2026 Shawn
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
