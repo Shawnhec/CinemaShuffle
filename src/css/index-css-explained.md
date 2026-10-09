@@ -373,7 +373,7 @@ button {
 | `background: var(--surface-muted)` | 灰底 | 讓它看起來像標籤，而不是一般文字 |
 | `border-radius: 999px` | 膠囊形 | 跟其他標籤一致 |
 
-### `.info-details h4`（"OVERVIEW" 小標題）
+### `.info-details h4`（"LANGUAGE"、"GENRES"、"OVERVIEW" 小標題）
 
 跟 `.sidebar h5` 和表單的 `legend` 是**同一種小標籤風格**（12px、半粗體、全大寫、加寬字距、灰色）。同一種用途的元素用同一種樣式，使用者會自然把它們理解成「同一類的東西」。
 
@@ -398,6 +398,24 @@ button {
 | `text-align: center` | 置中 | 狀態訊息通常置中 |
 | `color: var(--text-muted)` | 灰字 | |
 | `background` / `border-radius` / `box-shadow` | 跟資訊卡一樣的卡片外觀 | 資料載入前後，這個位置都是一張卡片，版面不會突然變形 |
+
+### `.ban-attrs`（目前作品的語言和 genre，點了會加進 ban list）
+
+裡面的按鈕直接沿用 `.button-group`，所以滑鼠移上去一樣會有紅字、紅框、刪除線，提示「點了會被排除」。
+
+| 屬性與值 | 作用 | 理由 |
+|---|---|---|
+| `display: flex` | Language 和 Genres 兩組左右並排 | 兩組都不長，並排可以省下垂直空間 |
+| `flex-wrap: wrap` | 放不下就換行 | genre 很多或視窗很窄時，Genres 那組會自動移到下一行 |
+| `gap: 12px 32px` | 上下 12px、左右 32px | 兩組之間左右隔遠一點，才看得出是兩組不同的東西；換行之後上下不需要隔那麼遠 |
+
+### `.ban-hint`（"Click a language or genre…" 提示文字）
+
+| 屬性與值 | 作用 | 理由 |
+|---|---|---|
+| `margin: 8px 0 20px` | 上 8px、下 20px | 緊貼著上面的按鈕，看得出是在說明它們；跟下面的 Overview 隔開 |
+| `font-size: 0.8rem` | 小字 | 只是操作提示 |
+| `color: var(--text-muted)` | 灰字 | 同上，不搶焦點 |
 
 ---
 

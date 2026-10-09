@@ -260,6 +260,19 @@ button:focus-visible {
   box-shadow: var(--shadow);
 }
 
+/* 目前作品可以點擊加入 ban list 的屬性 */
+.ban-attrs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 32px;
+}
+
+.ban-hint {
+  margin: 8px 0 20px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
 /* Next 按鈕 */
 #next-button {
   display: block;

@@ -7,10 +7,8 @@ const History = ({ history }) => {
       <>
         <h4>History: </h4>
         <ul className="list history-list">
-          {history.map((media, index) => (
-            <Card key={index} media={media}>
-              {media.name ?? media.title}
-            </Card>
+          {history.map((media) => (
+            <Card key={`${media.mediaType}-${media.id}`} media={media} />
           ))}
         </ul>
       </>
