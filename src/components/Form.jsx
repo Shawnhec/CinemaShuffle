@@ -28,25 +28,27 @@ const Form = ({
           <fieldset>
             <legend>Media Type</legend>
 
-            <label htmlFor="movie">Movie</label>
-            <input
-              id="movie"
-              type="radio"
-              name="media-type"
-              value="movie"
-              checked={mediaType === "movie"}
-              onChange={() => switchMedia("movie", setExcludedGenres)}
-            />
+            <div className="segmented">
+              <input
+                id="movie"
+                type="radio"
+                name="media-type"
+                value="movie"
+                checked={mediaType === "movie"}
+                onChange={() => switchMedia("movie", setExcludedGenres)}
+              />
+              <label htmlFor="movie">Movie</label>
 
-            <label htmlFor="tv">TV</label>
-            <input
-              id="tv"
-              type="radio"
-              name="media-type"
-              value="tv"
-              checked={mediaType === "tv"}
-              onChange={() => switchMedia("tv", setExcludedGenres)}
-            />
+              <input
+                id="tv"
+                type="radio"
+                name="media-type"
+                value="tv"
+                checked={mediaType === "tv"}
+                onChange={() => switchMedia("tv", setExcludedGenres)}
+              />
+              <label htmlFor="tv">TV</label>
+            </div>
           </fieldset>
         </div>
 
@@ -78,7 +80,7 @@ const Form = ({
             <legend>Language</legend>
 
             {languages && (
-              <ul className="button-group">
+              <ul className="button-group scroll-box">
                 {Object.entries(languages)
                   .filter((entry) => !excludedLanguages.has(entry[0]))
                   .map(([id, language]) => (
