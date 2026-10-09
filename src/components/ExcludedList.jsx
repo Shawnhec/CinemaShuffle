@@ -24,7 +24,7 @@ const ExcludedList = ({
       {excludedGenres.size > 0 && (
         <>
           <h5>Banned Genres: </h5>
-          <ul className="list">
+          <ul className="list chip-list">
             {[...excludedGenres].map((id) => (
               <Option
                 key={id}
@@ -40,7 +40,7 @@ const ExcludedList = ({
       {excludedLanguages.size > 0 && (
         <>
           <h5>Banned Languages: </h5>
-          <ul className="list">
+          <ul className="list chip-list">
             {[...excludedLanguages].map((id) => (
               <Option
                 key={id}
